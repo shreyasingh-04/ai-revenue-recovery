@@ -43,7 +43,7 @@ export default function AuditTrail({ orders, apiBase }) {
   const getIconForEvent = (eventType) => {
     switch (eventType) {
       case 'ingestion': return <Clock className="w-4 h-4 text-sky-400" />;
-      case 'classification': return <FileText className="w-4 h-4 text-fuchsia-400" />;
+      case 'classification': return <FileText className="w-4 h-4 text-teal-400" />;
       case 'decision': return <Settings className="w-4 h-4 text-amber-400" />;
       case 'action': return <Play className="w-4 h-4 text-violet-400" />;
       case 'outcome': return <CheckCircle className="w-4 h-4 text-emerald-400" />;
@@ -84,7 +84,7 @@ export default function AuditTrail({ orders, apiBase }) {
                 }}
                 className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 ${
                   selectedOrder?.id === order.id 
-                    ? 'bg-white/10 border-fuchsia-500/30 shadow-[0_0_20px_rgba(217,70,239,0.15)]' 
+                    ? 'bg-white/10 border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.15)]' 
                     : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
                 }`}
               >
@@ -92,8 +92,8 @@ export default function AuditTrail({ orders, apiBase }) {
                   <span className="font-semibold text-sm text-slate-200">{order.razorpay_order_id.slice(-8)}</span>
                   <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${
                     order.status === 'recovered' ? 'text-emerald-400 bg-emerald-500/10' :
-                    order.status === 'paid' ? 'text-fuchsia-300 bg-fuchsia-500/10' :
-                    order.status === 'unrecovered' ? 'text-rose-400 bg-rose-500/10' :
+                    order.status === 'paid' ? 'text-teal-300 bg-teal-500/10' :
+                    order.status === 'unrecovered' ? 'text-red-400 bg-red-500/10' :
                     order.status === 'abandoned' ? 'text-cyan-400 bg-cyan-500/10' :
                     'text-amber-400 bg-amber-500/10'
                   }`}>
@@ -115,13 +115,13 @@ export default function AuditTrail({ orders, apiBase }) {
       >
         {selectedOrder ? (
           <>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-teal-600/10 blur-[100px] rounded-full pointer-events-none"></div>
             
             <div className="border-b border-white/10 pb-6 mb-8 relative z-10 flex justify-between items-start">
               <div>
                 <h2 className="text-2xl font-bold flex items-center space-x-2 tracking-tight">
                   <span className="text-white">Order:</span>
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-300 to-violet-300">{selectedOrder.razorpay_order_id}</span>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-300 to-emerald-300">{selectedOrder.razorpay_order_id}</span>
                 </h2>
                 <div className="text-sm text-slate-400 mt-2 font-medium">
                   Status: <span className="text-slate-200 uppercase tracking-wider text-xs ml-1 mr-4">{selectedOrder.status}</span> 
@@ -157,12 +157,12 @@ export default function AuditTrail({ orders, apiBase }) {
             <div className="flex-1 overflow-y-auto custom-scrollbar relative pl-4 z-10">
               {loading ? (
                 <div className="flex items-center justify-center h-full">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-fuchsia-400"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-400"></div>
                 </div>
               ) : logs.length === 0 ? (
                 <div className="text-slate-500 text-sm text-center mt-10">No audit logs available for this order.</div>
               ) : (
-                <div className="space-y-8 before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-fuchsia-500/0 before:via-white/10 before:to-fuchsia-500/0">
+                <div className="space-y-8 before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-teal-500/0 before:via-white/10 before:to-teal-500/0">
                   <AnimatePresence>
                     {logs.map((log, index) => (
                       <motion.div 

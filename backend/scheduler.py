@@ -18,10 +18,9 @@ def poll_abandoned_orders():
         ).all()
         
         for order in abandoned_orders:
-            # Check if we already created an abandonment event
+            # Check if ANY events exist (if they attempted payment, it's not pure abandonment)
             existing_event = db.query(Event).filter(
-                Event.order_id == order.id,
-                Event.type == "pure_abandonment"
+                Event.order_id == order.id
             ).first()
             
             if not existing_event:

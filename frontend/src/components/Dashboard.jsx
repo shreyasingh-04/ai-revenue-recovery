@@ -55,16 +55,16 @@ export default function Dashboard({ metrics, orders }) {
           title="Orders Recovered" 
           value={`${metrics.total_recovered_orders} / ${metrics.total_orders_at_risk}`}
           icon={CheckCircle2}
-          colorClass="text-fuchsia-400"
-          gradientClass="from-fuchsia-400 to-violet-600"
+          colorClass="text-teal-400"
+          gradientClass="from-teal-400 to-emerald-600"
           delay={0.2}
         />
         <StatCard 
           title="Wasted Attempts" 
           value={metrics.wasted_attempts}
           icon={ShieldAlert}
-          colorClass="text-rose-400"
-          gradientClass="from-rose-500 to-pink-600"
+          colorClass="text-red-400"
+          gradientClass="from-red-500 to-red-600"
           delay={0.3}
         />
       </div>
@@ -137,8 +137,8 @@ export default function Dashboard({ metrics, orders }) {
                 </div>
                 <div className={`px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border ${
                   order.status === 'recovered' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                  order.status === 'paid' ? 'bg-fuchsia-500/10 text-fuchsia-300 border-fuchsia-500/20' :
-                  order.status === 'unrecovered' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                  order.status === 'paid' ? 'bg-teal-500/10 text-teal-300 border-teal-500/20' :
+                  order.status === 'unrecovered' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
                   order.status === 'abandoned' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' :
                   'bg-amber-500/10 text-amber-400 border-amber-500/20'
                 }`}>
