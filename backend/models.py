@@ -9,6 +9,7 @@ class Order(Base):
     razorpay_order_id = Column(String, unique=True, index=True)
     amount = Column(Float)
     status = Column(String, default="created") # created, paid, abandoned, recovered, unrecovered
+    promise_to_pay_date = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     
     events = relationship("Event", back_populates="order")

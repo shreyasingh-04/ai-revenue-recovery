@@ -88,6 +88,24 @@ async def razorpay_webhook(request: Request, background_tasks: BackgroundTasks, 
 
 # Frontend APIs
 
+@app.post("/api/orders/{order_id}/promise")
+def capture_promise(order_id: int, promise: schemas.PromiseRequest, db: Session = Depends(get_db)):
+    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    if not order:
+        return {"status": "error", "message": "Order not found"}
+    
+    from datetime import datetime, timedelta
+    promise_date = datetime.utcnow() + timedelta(hours=promise.hours_from_now)
+    order.promise_to_pay_date = promise_date
+    
+    # Optionally, we can mark the intervention as 'promised' if there was one
+    
+    log_audit(db, order.id, "decision", f"User promised to pay by {promise_date.strftime('%Y-%m-%d %H:%M:%S UTC')}")
+    db.commit()
+    
+    return {"status": "ok", "promise_to_pay_date": promise_date}
+
+
 @app.get("/api/metrics", response_model=schemas.MetricResponse)
 def get_metrics(db: Session = Depends(get_db)):
     orders = db.query(models.Order).all()

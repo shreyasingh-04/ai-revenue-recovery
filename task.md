@@ -1,0 +1,5 @@
+- [ ] 1. Backend: Update `models.py` to add `promise_to_pay_date` to the Order.
+- [ ] 2. Backend: Add `POST /api/orders/{id}/promise` endpoint in `main.py`.
+- [ ] 3. Backend: Update `scheduler.py` to monitor for broken promises.
+- [ ] 4. Frontend: Install `framer-motion` for UI polish.
+- [ ] 5. Frontend: Add Promise-to-Pay UI and animations to `AuditTrail.jsx` and `Dashboard.jsx`.

@@ -10,6 +10,9 @@ class OrderCreate(BaseModel):
     razorpay_order_id: str
     amount: float
 
+class PromiseRequest(BaseModel):
+    hours_from_now: int
+
 class OrderResponse(BaseModel):
     id: int
     razorpay_order_id: str

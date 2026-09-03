@@ -45,8 +45,37 @@ def poll_abandoned_orders():
     finally:
         db.close()
 
+def poll_broken_promises():
+    db = SessionLocal()
+    try:
+        now = datetime.utcnow()
+        # Find orders that have a promise date in the past, and aren't paid
+        broken_promises = db.query(Order).filter(
+            Order.promise_to_pay_date != None,
+            Order.promise_to_pay_date < now,
+            Order.status != "paid",
+            Order.status != "recovered",
+            Order.status != "unrecovered"
+        ).all()
+        
+        for order in broken_promises:
+            logger.info(f"Detected broken promise for order {order.id}")
+            # Log the broken promise
+            from engine import log_audit
+            log_audit(db, order.id, "outcome", "Promise to pay broken (time expired). Marking as unrecovered.")
+            
+            # Clear promise date and mark unrecovered
+            order.promise_to_pay_date = None
+            order.status = "unrecovered"
+            db.commit()
+    except Exception as e:
+        logger.error(f"Error in promise polling job: {e}")
+    finally:
+        db.close()
+
 def start_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(poll_abandoned_orders, 'interval', minutes=1)
+    scheduler.add_job(poll_broken_promises, 'interval', minutes=1)
     scheduler.start()
     logger.info("Started background scheduler for abandonment polling")
