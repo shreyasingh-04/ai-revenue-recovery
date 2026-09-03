@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 import requests
 
-from .database import engine, get_db, SessionLocal
-from .models import Order
+from database import engine, get_db, SessionLocal
+from models import Order
 
 # We will directly hit the webhook endpoint to simulate Razorpay events
 WEBHOOK_URL = "http://127.0.0.1:8000/api/webhooks/razorpay"
