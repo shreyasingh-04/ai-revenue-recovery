@@ -28,10 +28,10 @@ export default function AuditTrail({ orders, apiBase }) {
 
   const getIconForEvent = (eventType) => {
     switch (eventType) {
-      case 'ingestion': return <Clock className="w-4 h-4 text-blue-400" />;
-      case 'classification': return <FileText className="w-4 h-4 text-purple-400" />;
+      case 'ingestion': return <Clock className="w-4 h-4 text-sky-400" />;
+      case 'classification': return <FileText className="w-4 h-4 text-fuchsia-400" />;
       case 'decision': return <Settings className="w-4 h-4 text-amber-400" />;
-      case 'action': return <Play className="w-4 h-4 text-indigo-400" />;
+      case 'action': return <Play className="w-4 h-4 text-violet-400" />;
       case 'outcome': return <CheckCircle className="w-4 h-4 text-emerald-400" />;
       default: return <Clock className="w-4 h-4 text-slate-400" />;
     }
@@ -40,16 +40,16 @@ export default function AuditTrail({ orders, apiBase }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[75vh]">
       {/* Order List */}
-      <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-4 flex flex-col">
-        <div className="flex items-center space-x-2 mb-4 px-2">
-          <Search className="w-4 h-4 text-slate-400" />
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 flex flex-col shadow-xl">
+        <div className="flex items-center space-x-3 mb-6 p-3 bg-white/5 rounded-2xl border border-white/10">
+          <Search className="w-5 h-5 text-slate-400" />
           <input 
             type="text" 
             placeholder="Search orders..." 
-            className="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-slate-500"
+            className="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-slate-500 text-white outline-none"
           />
         </div>
-        <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2">
           {orders.map(order => (
             <button
               key={order.id}
@@ -57,62 +57,71 @@ export default function AuditTrail({ orders, apiBase }) {
                 setSelectedOrder(order);
                 fetchLogs(order.id);
               }}
-              className={`w-full text-left p-3 rounded-xl border transition-all ${
+              className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 ${
                 selectedOrder?.id === order.id 
-                  ? 'bg-slate-700/80 border-indigo-500/50' 
-                  : 'bg-slate-800/30 border-transparent hover:bg-slate-800/80'
+                  ? 'bg-white/10 border-fuchsia-500/30 shadow-[0_0_20px_rgba(217,70,239,0.15)]' 
+                  : 'bg-white/5 border-transparent hover:bg-white/10'
               }`}
             >
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-sm">{order.razorpay_order_id.slice(-8)}</span>
-                <span className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full ${
-                  order.status === 'recovered' ? 'text-emerald-400 bg-emerald-400/10' :
-                  order.status === 'paid' ? 'text-indigo-400 bg-indigo-400/10' :
-                  order.status === 'unrecovered' ? 'text-rose-400 bg-rose-400/10' :
-                  'text-amber-400 bg-amber-400/10'
+              <div className="flex justify-between items-center mb-1">
+                <span className="font-semibold text-sm text-slate-200">{order.razorpay_order_id.slice(-8)}</span>
+                <span className={`text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full ${
+                  order.status === 'recovered' ? 'text-emerald-400 bg-emerald-500/10' :
+                  order.status === 'paid' ? 'text-fuchsia-300 bg-fuchsia-500/10' :
+                  order.status === 'unrecovered' ? 'text-rose-400 bg-rose-500/10' :
+                  'text-amber-400 bg-amber-500/10'
                 }`}>
                   {order.status}
                 </span>
               </div>
-              <div className="text-xs text-slate-400 mt-1">₹{order.amount.toLocaleString()}</div>
+              <div className="text-xs text-slate-400 font-medium">₹{order.amount.toLocaleString()}</div>
             </button>
           ))}
         </div>
       </div>
 
       {/* Audit Log View */}
-      <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col">
+      <div className="lg:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 flex flex-col relative overflow-hidden shadow-xl">
         {selectedOrder ? (
           <>
-            <div className="border-b border-slate-700 pb-4 mb-4">
-              <h2 className="text-xl font-bold flex items-center space-x-2">
-                <span>Order:</span>
-                <span className="text-indigo-400">{selectedOrder.razorpay_order_id}</span>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+            
+            <div className="border-b border-white/10 pb-6 mb-8 relative z-10">
+              <h2 className="text-2xl font-bold flex items-center space-x-2 tracking-tight">
+                <span className="text-white">Order:</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-300 to-violet-300">{selectedOrder.razorpay_order_id}</span>
               </h2>
-              <div className="text-sm text-slate-400 mt-1">Status: <span className="text-slate-300 font-medium">{selectedOrder.status}</span> | Amount: ₹{selectedOrder.amount.toLocaleString()}</div>
+              <div className="text-sm text-slate-400 mt-2 font-medium">
+                Status: <span className="text-slate-200 uppercase tracking-wider text-xs ml-1 mr-4">{selectedOrder.status}</span> 
+                Amount: <span className="text-slate-200 ml-1">₹{selectedOrder.amount.toLocaleString()}</span>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar relative pl-4">
+            <div className="flex-1 overflow-y-auto custom-scrollbar relative pl-4 z-10">
               {loading ? (
-                <div className="text-slate-500 text-sm">Loading logs...</div>
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-fuchsia-400"></div>
+                </div>
               ) : logs.length === 0 ? (
-                <div className="text-slate-500 text-sm">No audit logs available for this order.</div>
+                <div className="text-slate-500 text-sm text-center mt-10">No audit logs available for this order.</div>
               ) : (
-                <div className="space-y-6 before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-700 before:to-transparent">
+                <div className="space-y-8 before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-fuchsia-500/0 before:via-white/10 before:to-fuchsia-500/0">
                   {logs.map((log, index) => (
                     <div key={log.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                      <div className={`flex items-center justify-center w-8 h-8 rounded-full border border-slate-700 bg-slate-800 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow md:absolute md:left-1/2 z-10 ${
-                        log.event_type === 'outcome' && log.description.includes('Successfully') ? 'border-emerald-500 bg-emerald-500/20' : ''
+                      <div className={`flex items-center justify-center w-10 h-10 rounded-full border bg-[#1a153a] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg md:absolute md:left-1/2 z-10 ${
+                        log.event_type === 'outcome' && log.description.includes('Successfully') 
+                          ? 'border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                          : 'border-white/10'
                       }`}>
                         {getIconForEvent(log.event_type)}
                       </div>
                       
-                      <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-slate-700 bg-slate-800/80 shadow">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="font-semibold text-slate-300 text-sm capitalize">{log.event_type}</div>
-                          <time className="text-xs text-slate-500">{new Date(log.timestamp).toLocaleTimeString()}</time>
+                      <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl hover:bg-white/10 transition-colors duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="font-bold text-slate-200 text-sm uppercase tracking-wider">{log.event_type}</div>
+                          <time className="text-xs font-medium text-slate-400 bg-white/5 px-2 py-1 rounded-md">{new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</time>
                         </div>
-                        <div className="text-sm text-slate-400">{log.description}</div>
+                        <div className="text-sm text-slate-300 leading-relaxed">{log.description}</div>
                       </div>
                     </div>
                   ))}

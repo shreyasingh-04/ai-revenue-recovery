@@ -4,10 +4,10 @@ from fastapi import FastAPI, Depends, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import models, schemas
-from .database import engine, get_db, Base
-from .engine import process_event, process_successful_payment, log_audit
-from .scheduler import start_scheduler
+import models, schemas
+from database import engine, get_db, Base
+from engine import process_event, process_successful_payment, log_audit
+from scheduler import start_scheduler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

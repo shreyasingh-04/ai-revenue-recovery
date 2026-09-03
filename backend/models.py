@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float, Text
 from sqlalchemy.orm import relationship
 import datetime
-from .database import Base
+from database import Base
 
 class Order(Base):
     __tablename__ = "orders"
