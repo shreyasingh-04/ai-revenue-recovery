@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime, timedelta
+import random
 from sqlalchemy.orm import Session
 from models import Order, Event, Classification, Intervention, Outcome, AuditLog
 from razorpay_client import get_client
@@ -110,11 +111,21 @@ def decide_and_execute(db: Session, order_id: int, cause: str):
     # Calculate cooldown for NEXT attempt if needed
     cooldown = datetime.utcnow() + timedelta(minutes=rule["cooldown_mins"]) if rule["cooldown_mins"] > 0 else None
     
+    discount = 0.0
+    if cause in ["insufficient_funds", "pure_abandonment"] and order.amount >= 8000:
+        discount = 5.0
+        
+    ab_variant = None
+    if cause == "pure_abandonment":
+        ab_variant = random.choice(["A", "B"])
+        
     intervention = Intervention(
         order_id=order_id, 
         action_type=action, 
         attempt_number=attempt,
-        cooldown_until=cooldown
+        cooldown_until=cooldown,
+        discount_offered=discount,
+        ab_variant=ab_variant
     )
     db.add(intervention)
     db.commit()
@@ -123,9 +134,17 @@ def decide_and_execute(db: Session, order_id: int, cause: str):
     
     # Execute
     client = get_client()
-    description = f"Recovery attempt for {cause}"
+    
     if cause == "pure_abandonment":
-        description = "Complete your order with this special link!"
+        if ab_variant == "A":
+            description = "[Variant A] Hey, we saved your cart! Complete your purchase whenever you're ready."
+        else:
+            description = "[Variant B] Urgent: Your reserved items will expire in 15 minutes! Checkout now."
+    else:
+        description = f"Recovery attempt for {cause}"
+        
+    if discount > 0:
+        description += f" [Special {discount}% discount applied!]"
         
     if action != "reminder_nudge_only":
         try:

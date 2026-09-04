@@ -185,7 +185,21 @@ export default function AuditTrail({ orders, apiBase }) {
                             <div className="font-bold text-slate-200 text-sm uppercase tracking-wider">{log.event_type}</div>
                             <time className="text-xs font-medium text-slate-400 bg-white/5 px-2 py-1 rounded-md">{new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</time>
                           </div>
-                          <div className="text-sm text-slate-300 leading-relaxed">{log.description}</div>
+                          <div className="text-sm text-slate-300 leading-relaxed">
+                            {log.description.split(/(\[.*?\])/).map((part, i) => {
+                              if (part.startsWith('[') && part.endsWith(']')) {
+                                let colorClass = "bg-teal-500/20 text-teal-300 border-teal-500/30";
+                                if (part.includes("Variant")) colorClass = "bg-indigo-500/20 text-indigo-300 border-indigo-500/30";
+                                if (part.includes("discount")) colorClass = "bg-rose-500/20 text-rose-300 border-rose-500/30";
+                                return (
+                                  <span key={i} className={`inline-block px-2 py-0.5 mb-1 mr-1 text-[10px] font-bold uppercase tracking-wider rounded border ${colorClass}`}>
+                                    {part.slice(1, -1)}
+                                  </span>
+                                );
+                              }
+                              return <span key={i}>{part}</span>;
+                            })}
+                          </div>
                         </div>
                       </motion.div>
                     ))}

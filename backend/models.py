@@ -40,6 +40,8 @@ class Intervention(Base):
     attempt_number = Column(Integer, default=1)
     cooldown_until = Column(DateTime, nullable=True)
     status = Column(String, default="pending") # pending, executed, cancelled
+    discount_offered = Column(Float, default=0.0)
+    ab_variant = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class Outcome(Base):

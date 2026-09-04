@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, ShieldAlert, CheckCircle2, TrendingUp, AlertTriangle } from 'lucide-react';
+import { DollarSign, ShieldAlert, CheckCircle2, TrendingUp, AlertTriangle, Coins, Target } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -44,7 +44,7 @@ export default function Dashboard({ metrics, orders }) {
   return (
     <div className="space-y-8">
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard 
           title="Revenue at Risk" 
           value={`₹${metrics.total_amount_at_risk.toLocaleString()}`}
@@ -76,12 +76,28 @@ export default function Dashboard({ metrics, orders }) {
           isActive={filter === 'recovered'}
         />
         <StatCard 
+          title="Margin Sacrificed" 
+          value={`₹${metrics.total_margin_sacrificed.toLocaleString()}`}
+          icon={Coins}
+          colorClass="text-rose-400"
+          gradientClass="from-rose-500 to-red-600"
+          delay={0.3}
+        />
+        <StatCard 
+          title="A/B Nudge Win Rate" 
+          value={`A: ${Math.round(metrics.ab_test_win_rates.A || 0)}% | B: ${Math.round(metrics.ab_test_win_rates.B || 0)}%`}
+          icon={Target}
+          colorClass="text-indigo-400"
+          gradientClass="from-indigo-500 to-purple-600"
+          delay={0.4}
+        />
+        <StatCard 
           title="Wasted Attempts" 
           value={metrics.wasted_attempts}
           icon={ShieldAlert}
           colorClass="text-red-400"
           gradientClass="from-red-500 to-red-600"
-          delay={0.3}
+          delay={0.5}
           onClick={() => setFilter('unrecovered')}
           isActive={filter === 'unrecovered'}
         />

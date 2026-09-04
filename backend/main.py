@@ -138,13 +138,37 @@ def get_metrics(db: Session = Depends(get_db)):
         for cause, stats in cause_stats.items()
     }
     
+    total_margin_sacrificed = 0.0
+    for o in recovered:
+        interventions = db.query(models.Intervention).filter(models.Intervention.order_id == o.id).all()
+        for i in interventions:
+            if i.discount_offered > 0:
+                total_margin_sacrificed += o.amount * (i.discount_offered / 100)
+                
+    ab_stats = {"A": {"total": 0, "recovered": 0}, "B": {"total": 0, "recovered": 0}}
+    interventions_ab = db.query(models.Intervention).filter(models.Intervention.ab_variant.isnot(None)).all()
+    for inv in interventions_ab:
+        v = inv.ab_variant
+        if v in ab_stats:
+            ab_stats[v]["total"] += 1
+            o = db.query(models.Order).filter(models.Order.id == inv.order_id).first()
+            if o and o.status == "recovered":
+                ab_stats[v]["recovered"] += 1
+                
+    ab_test_win_rates = {
+        v: (stats["recovered"] / stats["total"]) * 100 if stats["total"] > 0 else 0
+        for v, stats in ab_stats.items()
+    }
+    
     return {
         "total_orders_at_risk": total_orders_at_risk,
         "total_amount_at_risk": total_amount_at_risk,
         "total_recovered_orders": total_recovered_orders,
         "total_recovered_amount": total_recovered_amount,
         "recovery_rate_by_cause": recovery_rate_by_cause,
-        "wasted_attempts": wasted
+        "wasted_attempts": wasted,
+        "total_margin_sacrificed": total_margin_sacrificed,
+        "ab_test_win_rates": ab_test_win_rates
     }
 
 @app.get("/api/orders", response_model=list[schemas.OrderResponse])

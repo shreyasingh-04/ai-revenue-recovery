@@ -30,3 +30,5 @@ class MetricResponse(BaseModel):
     total_recovered_amount: float
     recovery_rate_by_cause: Dict[str, float]
     wasted_attempts: int
+    total_margin_sacrificed: float
+    ab_test_win_rates: Dict[str, float]
