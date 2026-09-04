@@ -32,14 +32,20 @@ def classify_event(db: Session, event: Event) -> Classification:
     cause = "network_drop" # default fallback
     
     if event.type == "payment.failed":
-        error_code = payload.get("error", {}).get("code", "")
-        error_reason = payload.get("error", {}).get("reason", "")
+        inner = payload.get("payload", {})
+        error_code = inner.get("error", {}).get("code", "")
+        error_reason = inner.get("error", {}).get("reason", "")
+        
+        if not error_reason:
+            error_reason = inner.get("payment", {}).get("entity", {}).get("error_description", "")
+        
+        error_reason = error_reason.lower()
         
         if "BAD_REQUEST_ERROR" in error_code and "declined" in error_reason:
             cause = "card_declined"
         elif "insufficient_funds" in error_reason:
             cause = "insufficient_funds"
-        elif "timeout" in error_reason or "gateway" in error_code:
+        elif "timeout" in error_reason or "gateway" in error_code.lower():
             cause = "bank_timeout"
         elif "upi_collect_expired" in error_reason:
             cause = "upi_collect_expired"

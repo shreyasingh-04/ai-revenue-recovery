@@ -86,6 +86,14 @@ def generate_batch(num_orders=50):
     print("Waiting 5 seconds for the agent to process drop-offs...")
     time.sleep(5)
     
+    # 3.5 Force run the scheduler for pure_abandonment so interventions are generated before recovery simulation
+    try:
+        from scheduler import poll_abandoned_orders
+        print("Polling for pure abandonment...")
+        poll_abandoned_orders()
+    except Exception as e:
+        print("Failed to run scheduler manually:", e)
+    
     # 4. Simulate successful recoveries
     print("Simulating customers paying via the recovery links...")
     # Get all orders that have an intervention
