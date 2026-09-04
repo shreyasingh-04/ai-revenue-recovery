@@ -7,7 +7,10 @@ from sqlalchemy.orm import Session
 import requests
 
 from database import engine, get_db, SessionLocal
-from models import Order
+from models import Order, Base, Intervention
+
+# Ensure tables exist just in case the backend hasn't created them yet
+Base.metadata.create_all(bind=engine)
 
 # We will directly hit the webhook endpoint to simulate Razorpay events
 WEBHOOK_URL = "http://127.0.0.1:8000/api/webhooks/razorpay"
