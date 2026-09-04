@@ -79,10 +79,38 @@ def generate_batch(num_orders=50):
                 print(f"Make sure the FastAPI server is running on port 8000! Error: {e}")
                 return
                 
-        # Simulate some successful payments eventually? (For demo purposes, the scheduler or engine would handle outcomes)
-        
+    # 3. Wait for the engine to process the failures and generate interventions
+    print("Waiting 5 seconds for the agent to process drop-offs...")
+    time.sleep(5)
+    
+    # 4. Simulate successful recoveries
+    print("Simulating customers paying via the recovery links...")
+    # Get all orders that have an intervention
+    orders_with_interventions = db.query(Order).filter(Order.status == "created").all()
+    
+    for order in orders_with_interventions:
+        # 60% chance they pay the recovery link
+        if random.random() < 0.6:
+            payload = {
+                "event": "order.paid",
+                "payload": {
+                    "order": {
+                        "entity": {
+                            "id": order.razorpay_order_id,
+                            "amount": order.amount * 100,
+                            "status": "paid"
+                        }
+                    }
+                }
+            }
+            try:
+                requests.post(WEBHOOK_URL, json=payload)
+                print(f"Simulated successful recovery payment for order {order.id}")
+            except Exception as e:
+                pass
+
     db.close()
-    print("Batch generation complete. Let the agent process them!")
+    print("Batch generation and recovery simulation complete!")
 
 if __name__ == "__main__":
     generate_batch(50)
